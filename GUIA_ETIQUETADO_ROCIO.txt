@@ -1,0 +1,176 @@
+══════════════════════════════════════════════════════════════════════════════
+  ETIQUETADO SEMÁNTICO AUTOMÁTICO — REVISTAS FEMENINAS HISPÁNICAS
+  GRESEL-UNED · PID2023-151280OB-C22
+  Guía de instalación y uso
+══════════════════════════════════════════════════════════════════════════════
+
+DESCRIPCIÓN
+───────────
+Esta herramienta clasifica automáticamente las regiones estructurales
+(títulos, párrafos, firmas de autor, cabeceras, etc.) de los archivos
+PAGE XML del repositorio greseluned/femeninas.
+
+Aprende de las 183 páginas ya anotadas manualmente (estado "Ground Truth")
+y aplica esas etiquetas al resto del corpus (aproximadamente 484 páginas
+sin etiquetar), obteniendo un F1-macro de 0,735 en validación cruzada.
+
+Las tres publicaciones cubiertas son:
+  · Fémina (República Dominicana) — 377 páginas
+  · Filipinas (Filipinas)         — 98 páginas
+  · El Heraldo de la Mujer (Puerto Rico) — 192 páginas
+
+
+REQUISITOS PREVIOS
+──────────────────
+1. Python 3.9 o superior
+   Descarga: https://www.python.org/downloads/
+   (marcar la casilla "Add Python to PATH" en Windows)
+
+2. Git
+   Descarga: https://git-scm.com/downloads
+
+
+INSTALACIÓN (hacer una sola vez)
+─────────────────────────────────
+
+PASO 1 — Descargar el corpus de revistas
+
+   Abre una terminal (en Windows: tecla Windows → escribe "cmd" → Enter)
+   y ejecuta:
+
+   git clone https://github.com/greseluned/femeninas.git
+
+   Esto crea una carpeta "femeninas" con el corpus completo PAGE XML.
+   El corpus ocupa aproximadamente 200 MB.
+
+   Si ya tenías el repositorio clonado de antes, simplemente actualízalo:
+   cd femeninas
+   git pull
+
+PASO 2 — Copiar los archivos de la herramienta
+
+   Pon los dos archivos siguientes en la misma carpeta "femeninas"
+   (o en cualquier carpeta de tu elección):
+
+     · app_etiquetado_semantico.py
+     · requirements_etiquetado.txt
+
+   El programa detectará automáticamente el corpus si está en una
+   de estas rutas estándar:
+     · femeninas/corpus/         (si app y corpus están juntos)
+     · ~/Documents/femeninas/corpus/
+     · /tmp/femeninas/corpus/
+
+   Si el corpus está en otra ubicación, podrás indicarla manualmente
+   desde la interfaz.
+
+PASO 3 — Instalar las dependencias Python
+
+   En la terminal, desde la carpeta donde está el archivo .py:
+
+   pip install -r requirements_etiquetado.txt
+
+   Esto instala: streamlit, scikit-learn y numpy.
+   Solo es necesario hacerlo una vez.
+
+
+USO
+───
+
+Para arrancar la aplicación, ejecuta en la terminal:
+
+   streamlit run app_etiquetado_semantico.py
+
+   Se abrirá automáticamente en el navegador: http://localhost:8501
+
+   Si no se abre solo, copia esa dirección en el navegador.
+
+
+FLUJO DE TRABAJO EN LA INTERFAZ
+────────────────────────────────
+
+La aplicación tiene cuatro pestañas:
+
+  ① CORPUS — Resumen del corpus
+     · Número total de páginas por publicación
+     · Páginas ya anotadas (GT) vs. páginas sin etiquetar
+     · Distribución de los tipos estructurales en las páginas GT
+
+  ② MODELO — Entrenamiento del clasificador
+     · Pulsa "▶ Entrenar modelo" para iniciar
+     · El sistema aprende de las 183 páginas anotadas
+     · Muestra el F1-macro y los tipos que el modelo reconoce
+     · El entrenamiento tarda 15-30 segundos (solo la primera vez)
+
+  ③ ETIQUETAR — Aplicar el modelo al corpus
+     · Selecciona publicación y si quieres procesar solo las páginas
+       sin etiquetar o todas
+     · Pulsa "▶ Aplicar etiquetado"
+     · Verás la distribución de predicciones y una muestra de resultados
+       filtrable por tipo estructural y publicación
+
+  ④ EXPORTAR — Descargar resultados en CSV
+     · CSV completo (GT anotadas + nuevas predicciones)
+     · CSV solo con las predicciones nuevas
+     · Tabla resumen por publicación × tipo
+     · El CSV usa codificación UTF-8 con BOM para compatibilidad con Excel
+
+
+TIPOS ESTRUCTURALES RECONOCIDOS
+────────────────────────────────
+
+  heading      → Título / Encabezado de artículo o poema
+  paragraph    → Párrafo de texto
+  credit       → Autoría / Firma del autor o autora
+  header       → Cabecera de página (nombre de la revista, fecha, nº)
+  caption      → Pie de imagen o fotografía
+  page-number  → Número de página
+  marginalia   → Texto marginal o anotación
+  floating     → Texto flotante (recuadros, destacados)
+  drop-capital → Inicial decorativa (letra capitular)
+
+  Nota: "caption" y "drop-capital" tienen muy pocos ejemplos anotados
+  en el corpus GT (3 y 0 respectivamente), por lo que el modelo los
+  excluye de la validación cruzada pero sí los muestra en los datos GT.
+
+
+RENDIMIENTO DEL MODELO
+───────────────────────
+
+  · F1-macro (validación cruzada 5-fold): 0,735 ± 0,065
+  · Entrenado con 362 regiones de texto de 183 páginas GT
+  · 7 tipos estructurales en el modelo
+  · El rendimiento es sólido para un corpus de este tamaño;
+    mejoraría notablemente con más páginas anotadas.
+
+
+PREGUNTAS FRECUENTES
+────────────────────
+
+P: El programa no encuentra el corpus.
+R: Aparecerá un campo de texto en el panel lateral. Introduce la ruta
+   completa a la carpeta "corpus" del repositorio, por ejemplo:
+   C:\Users\Rocio\Documents\femeninas\corpus
+
+P: El entrenamiento tarda mucho.
+R: Es normal la primera vez (15-30 segundos). Las siguientes ejecuciones
+   son más rápidas gracias al caché de Streamlit.
+
+P: ¿Puedo añadir más páginas anotadas para mejorar el modelo?
+R: Sí. Cuando se añadan más páginas GT al repositorio (estado "GT" en
+   Transkribus), basta con hacer "git pull" en la carpeta femeninas y
+   volver a pulsar "Entrenar modelo" en la aplicación.
+
+P: El CSV tiene caracteres extraños en Excel.
+R: Al abrir el CSV en Excel, selecciona "Obtener datos externos → Desde
+   texto/CSV" y elige codificación UTF-8. El archivo ya incluye BOM
+   (marca de orden de bytes) que debería facilitar la apertura directa.
+
+
+SOPORTE
+───────
+Fernando Obispo Permuy
+Técnico de Informática — GRESEL-UNED
+PID2023-151280OB-C22
+
+══════════════════════════════════════════════════════════════════════════════
