@@ -27,15 +27,26 @@ NS = {"p": "http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15"}
 
 # Tipos estructurales con etiqueta legible y color
 TIPOS = {
-    "heading":      ("Título / Encabezado",  "#1A1A2E"),
-    "paragraph":    ("Párrafo",              "#2C5F8A"),
-    "credit":       ("Autoría / Firma",      "#8B0000"),
-    "header":       ("Cabecera de página",   "#2E6B4A"),
-    "caption":      ("Pie de imagen",        "#7A5C5C"),
-    "page-number":  ("Número de página",     "#555555"),
-    "marginalia":   ("Marginalia",           "#8B7355"),
-    "floating":     ("Texto flotante",       "#5C5C8B"),
-    "drop-capital": ("Inicial decorativa",   "#7A4F3A"),
+    # ── Estructura de página ──────────────────────────────
+    "header":            ("Cabecera de página",        "#2E6B4A"),
+    "Title-newspaper":   ("Título del periódico",      "#6B0030"),
+    "Subtitle-newspaper":("Subtítulo del periódico",   "#9B2050"),
+    "Index":             ("Índice de secciones",       "#2A6B7A"),
+    "page-number":       ("Número de página",          "#555555"),
+    # ── Contenido textual ────────────────────────────────
+    "heading":           ("Título / Encabezado",       "#1A1A2E"),
+    "paragraph":         ("Párrafo",                   "#2C5F8A"),
+    "credit":            ("Autoría / Firma",           "#8B0000"),
+    "poem":              ("Poema",                     "#5C2A6B"),
+    "story":             ("Cuento",                    "#1A5C5C"),
+    "serial-fiction":    ("Novela por entregas",       "#4A5C1A"),
+    "recipe":            ("Receta",                    "#8B5E00"),
+    "table":             ("Tabla",                     "#3A4A6B"),
+    # ── Elementos especiales ─────────────────────────────
+    "caption":           ("Pie de imagen",             "#7A5C5C"),
+    "marginalia":        ("Marginalia",                "#8B7355"),
+    "floating":          ("Texto flotante",            "#5C5C8B"),
+    "drop-capital":      ("Inicial decorativa",        "#7A4F3A"),
 }
 
 # Publicaciones del corpus femeninas
@@ -51,9 +62,9 @@ MIN_EJEMPLOS_CV = 5   # mínimo de muestras para incluir un tipo en el CV
 SCRIPT_DIR = Path(__file__).parent
 CORPUS_CANDIDATES = [
     SCRIPT_DIR / "femeninas" / "corpus",
+    SCRIPT_DIR.parent / "femeninas" / "corpus",   # Etiquetado/ y femeninas/ en la misma carpeta
     SCRIPT_DIR / "corpus",
     Path.home() / "Documents" / "femeninas" / "corpus",
-    Path("/tmp/femeninas/corpus"),
 ]
 
 # ─────────────────────────────────────────────────────────────────────────────
